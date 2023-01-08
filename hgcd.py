@@ -1,3 +1,8 @@
+
+# Based on https://www.ams.org/journals/mcom/2008-77-261/S0025-5718-07-02017-0/S0025-5718-07-02017-0.pdf
+# by Niels Martin Moller
+# See Figure 5.
+
 from math import gcd as gcd_base
 from random import randrange
 
