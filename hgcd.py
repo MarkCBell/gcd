@@ -9,7 +9,6 @@ from random import randrange
 # 2x2 matrix things:
 def apply_inv(M, A, B):
     ''' Return M^{-1} * [[A], [B]] '''
-    u, up, v, vp = M
     w, x, y, z = M
     return vp * A + -up * B, -v * A + u * B
 
