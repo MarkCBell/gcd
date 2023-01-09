@@ -41,7 +41,7 @@ def sdiv_step(A, B, S=-1):
 def hgcd_d(A, B):
     ''' Return invertible M such that:
      - a & b have at least #(A, B) / 2 bits, and
-     - a & b agree execpt for up to the last #(A, B) / 2 bits
+     - a & b agree, except for up to possibly the last #(A, B) / 2 bits
     where [[a], [b]] = M * [[A], [B]],
     '''
     N = pound(A, B)
