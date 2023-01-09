@@ -65,7 +65,7 @@ def hgcd_d(A, B):
 
     if pound_(A, B) > S + 2:
         N2 = pound(A, B)
-        p2 = 2*S - N2 + 1
+        p2 = N - N2  # => N2 - p2 <= ceil(N / 2)
         Mp = hgcd_d(A >> p2, B >> p2)
         A, B = apply_inv(Mp, A, B)
         M = mmult(M, Mp)
@@ -81,15 +81,14 @@ def hgcd_d(A, B):
     return M
 
 
-GCD_THRESHOLD = 6
-
 def gcd(A, B):
+    GCD_THRESHOLD = 10  # Drop back to classical (quadratic) GCD for numbers with less than this many digits.
     while pound(A, B) > GCD_THRESHOLD and A and B:
         # Each round pound(A, B) drops by at least a factor of two.
         if pound_(A, B) > pound(A, B) // 2 + 1:
             M = hgcd_d(A, B)
             A, B = apply_inv(M, A, B)
-        A, B = apply_inv(sdiv_step(A, B), A, B)
+            A, B = apply_inv(sdiv_step(A, B), A, B)
         A, B = apply_inv(sdiv_step(A, B), A, B)
 
     return gcd_base(A, B)
@@ -99,7 +98,7 @@ if __name__ == '__main__':
     print(gcd(881977367293790019891741237765792326366976618401959844946532357313, 1394094305888389051794636634143434282855635329783306699540532756256))
     print(gcd(0b101010110111010101000101010001010101001010100010100, 0b101010110111010101000101010001010101001010100010101))
     print(gcd(11335, 11579))
-    print('FIRST', gcd(1199, 1178))
+    print(gcd(1199, 1178))
     print(gcd(4797, 4715))
     print(gcd(1355091, 1473130))
     print(gcd(19305988327, 10249781048))
