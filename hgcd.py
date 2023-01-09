@@ -46,12 +46,12 @@ def hgcd_d(A, B):
     '''
     N = pound(A, B)
     S = N // 2 + 1
-    assert pound_(A, B) > S
-    if pound_(A, B) <= S:
-        return sdiv_step(A, B, S)
-
     Q = 3 * N // 4
     M = 1, 0, 0, 1  # Running total of all matrices we have applied.
+
+    if pound_(A, B) <= S:
+        return M  # Nothing to do.
+
     if pound_(A, B) > Q + 2:
         p1 = S - 1
         Mp = hgcd_d(A >> p1, B >> p1)
@@ -65,7 +65,7 @@ def hgcd_d(A, B):
 
     if pound_(A, B) > S + 2:
         N2 = pound(A, B)
-        p2 = N - N2  # => N2 - p2 <= ceil(N / 2)
+        p2 = N - N2 + 3
         Mp = hgcd_d(A >> p2, B >> p2)
         A, B = apply_inv(Mp, A, B)
         M = mmult(M, Mp)
@@ -85,10 +85,10 @@ def gcd(A, B):
     GCD_THRESHOLD = 10  # Drop back to classical (quadratic) GCD for numbers with less than this many digits.
     while pound(A, B) > GCD_THRESHOLD and A and B:
         # Each round pound(A, B) drops by at least a factor of two.
-        if pound_(A, B) > pound(A, B) // 2 + 1:
-            M = hgcd_d(A, B)
-            A, B = apply_inv(M, A, B)
-            A, B = apply_inv(sdiv_step(A, B), A, B)
+        M = hgcd_d(A, B)
+        A, B = apply_inv(M, A, B)
+        # Now A & B agree on at least the first half of their bits.
+        A, B = apply_inv(sdiv_step(A, B), A, B)
         A, B = apply_inv(sdiv_step(A, B), A, B)
 
     return gcd_base(A, B)
