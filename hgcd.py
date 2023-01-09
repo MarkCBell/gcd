@@ -48,8 +48,6 @@ def hgcd_d(A, B):
     Q = 3 * N // 4
     M = 1, 0, 0, 1  # Running total of all matrices we have applied.
     assert pound_(A, B) > S
-    if pound_(A, B) <= S:
-        return M  # Nothing to do.
 
     if pound_(A, B) > Q + 2:
         p1 = S - 1
@@ -57,6 +55,7 @@ def hgcd_d(A, B):
         A, B = apply_inv(Mp, A, B)
         M = mmult(M, Mp)
 
+    # Loops at most 6 times.
     while pound(A, B) > Q + 1 and pound(A - B) > S:
         Ms = sdiv_step(A, B, S)
         A, B = apply_inv(Ms, A, B)
@@ -69,6 +68,7 @@ def hgcd_d(A, B):
         A, B = apply_inv(Mp, A, B)
         M = mmult(M, Mp)
 
+    # Loops at most 4 times.
     while pound(A - B) > S:
         Ms = sdiv_step(A, B, S)
         A, B = apply_inv(Ms, A, B)
