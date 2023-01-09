@@ -82,9 +82,9 @@ def hgcd_d(A, B):
 
 
 def gcd(A, B):
-    GCD_THRESHOLD = 10  # Drop back to classical (quadratic) GCD for numbers with less than this many digits.
-    while pound(A, B) > GCD_THRESHOLD and A and B:
-        # Each round pound(A, B) drops by at least a factor of two.
+    # Each round pound(A, B) at least halves.
+    # Hence only log_2(N) rounds are needed, each of which can be done in O(N log(N)) time.
+    while pound_(A, B) > 10:  # We could drop back to classical (quadratic) GCD at any bound, including 0.
         M = hgcd_d(A, B)
         A, B = apply_inv(M, A, B)
         # Now A & B agree on at least the first half of their bits.
