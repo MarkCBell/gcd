@@ -55,7 +55,7 @@ def hgcd_d(A, B):
         A, B = apply_inv(Mp, A, B)
         M = mmult(M, Mp)
 
-    # Loops at most 6 times.
+    # Loops at most 4 times.
     while pound(A, B) > Q + 1 and pound(A - B) > S:
         Ms = sdiv_step(A, B, S)
         A, B = apply_inv(Ms, A, B)
