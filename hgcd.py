@@ -10,7 +10,7 @@ from random import randrange
 def apply_inv(M, A, B):
     ''' Return M^{-1} * [[A], [B]] '''
     w, x, y, z = M
-    return vp * A + -up * B, -v * A + u * B
+    return z * A + -x * B, -y * A + w * B
 
 def mmult(M, Mp):
     ''' Return M * Mp '''
