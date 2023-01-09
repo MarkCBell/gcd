@@ -85,8 +85,7 @@ def gcd(A, B):
     # Each round pound(A, B) at least halves.
     # Hence only log_2(N) rounds are needed, each of which can be done in O(N log(N)) time.
     while pound_(A, B) > 10:  # We could drop back to classical (quadratic) GCD at any bound, including 0.
-        M = hgcd_d(A, B)
-        A, B = apply_inv(M, A, B)
+        A, B = apply_inv(hgcd_d(A, B), A, B)
         # Now A & B agree on at least the first half of their bits.
         A, B = apply_inv(sdiv_step(A, B), A, B)
         A, B = apply_inv(sdiv_step(A, B), A, B)
