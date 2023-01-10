@@ -38,41 +38,25 @@ def sdiv_step(A, B, S=-1):
 
 # Main:
 def hgcd_d(A, B):
-    ''' Return invertible M such that:
-     - a & b have at least #(A, B) / 2 bits, and
-     - a & b agree, except for up to possibly the last #(A, B) / 2 bits
-    where [[a], [b]] = M * [[A], [B]],
-    '''
     N = pound(A, B)
     S = N // 2 + 1
     Q = 3 * N // 4
     M = 1, 0, 0, 1  # Running total of all matrices we have applied.
-    assert pound_(A, B) > S
+    if pound_(A, B) <= S:  # Nothing to do.
+        return M
 
-    if pound_(A, B) > Q + 2:
-        p1 = S - 1
-        Mp = hgcd_d(A >> p1, B >> p1)
+    for b in [Q, S]:
+        Np = pound(A, B)
+        p = 2*b - Np
+        Mp = hgcd_d(A >> p, B >> p)
         A, B = apply_inv(Mp, A, B)
         M = mmult(M, Mp)
 
-    # Loops at most 4 times.
-    while pound(A, B) > Q + 1 and pound(A - B) > S:
-        Ms = sdiv_step(A, B, S)
-        A, B = apply_inv(Ms, A, B)
-        M = mmult(M, Ms)
-
-    if pound_(A, B) > S + 2:
-        N2 = pound(A, B)
-        p2 = N - N2 + 3
-        Mp = hgcd_d(A >> p2, B >> p2)
-        A, B = apply_inv(Mp, A, B)
-        M = mmult(M, Mp)
-
-    # Loops at most 4 times.
-    while pound(A - B) > S:
-        Ms = sdiv_step(A, B, S)
-        A, B = apply_inv(Ms, A, B)
-        M = mmult(M, Ms)
+        # Loops at most 4 times.
+        while pound(A, B) > b + 1 and pound(A - B) > S:
+            Ms = sdiv_step(A, B, S)
+            A, B = apply_inv(Ms, A, B)
+            M = mmult(M, Ms)
 
     assert M[0] * M[3] - M[1] * M[2] == 1
     assert pound_(A, B) > S
@@ -84,10 +68,9 @@ def gcd(A, B):
     # Each round pound(A, B) at least halves.
     # Hence only log_2(N) rounds are needed, each of which can be done in O(N log(N)) time.
     while pound(A, B) > 4 and A and B:  # We could drop back to classical (quadratic) GCD at any bound, including 0.
-        if pound_(A, B) > pound(A, B) // 2 + 1:
-            A, B = apply_inv(hgcd_d(A, B), A, B)
-            # Now A & B agree on at least the first half of their bits.
-            A, B = apply_inv(sdiv_step(A, B), A, B)
+        A, B = apply_inv(hgcd_d(A, B), A, B)
+        # Now A & B agree on at least the first half of their bits.
+        A, B = apply_inv(sdiv_step(A, B), A, B)
         A, B = apply_inv(sdiv_step(A, B), A, B)
 
     return gcd_base(A, B)
